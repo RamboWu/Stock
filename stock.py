@@ -15,7 +15,7 @@ session = requests_cache.CachedSession(cache_name='cache', backend='sqlite', exp
 
 start = datetime.datetime(2013, 1, 1)
 end = time.strftime( '%Y-%m-%d', time.localtime() )
-df = web.DataReader("GOOGL", 'yahoo', start, end, session=session)
+df = web.DataReader("000001.ss", 'yahoo', start, end, session=session)
 
 dates =[]
 for x in range(len(df)):
