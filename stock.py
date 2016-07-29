@@ -38,3 +38,6 @@ pylab.ylim((-0.1,1.1))
 df['Market'] = np.log(df['Adj Close'] / df['Adj Close'].shift(1))
 df['Strategy'] = df['Regime'].shift(1) * df['Market']
 print(df[['Market', 'Strategy', 'Regime']].tail())
+
+df[['Market', 'Strategy']].cumsum().apply(np.exp).plot(grid=False, figsize=(12,8))
+sns.plt.show()
