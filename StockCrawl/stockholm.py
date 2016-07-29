@@ -453,6 +453,7 @@ class Stockholm(object):
         directory = self.export_folder
         file_name = self.export_file_name
 
+        print('file_data = ' + directory + '/' + file_name + '.json')
         all_quotes_data = []
         f = io.open(directory + '/' + file_name + '.json', 'r', encoding='utf-8')
         json_str = f.readline()
@@ -464,14 +465,26 @@ class Stockholm(object):
     def check_date(self, all_quotes, date):
 
         is_date_valid = False
+        need_delete_quotes = []
         for quote in all_quotes:
             if(quote['Symbol'] in self.index_array):
-                for quote_data in quote['Data']:
-                    if(quote_data['Date'] == date):
-                        is_date_valid = True
+                if 'Data' in quote.keys():
+                    for quote_data in quote['Data']:
+                        if(quote_data['Date'] == date):
+                            is_date_valid = True
+                else:
+
+                    need_delete_quotes.append(quote)
+
+        for quote in need_delete_quotes:
+            all_quotes.remove(quote)
+            print('delete ', quote)
+
         if not is_date_valid:
             print(date + " is not valid...\n")
-        return is_date_valid
+        else:
+            print(date + " is valid!\n")
+        return is_date_valid, all_quotes
 
     def quote_pick(self, all_quotes, target_date, methods):
         print("quote_pick start..." + "\n")
@@ -623,6 +636,8 @@ class Stockholm(object):
             if not os.path.exists(path):
                 print("Portfolio test file is not existed, testing is aborted...\n")
                 return
+            else:
+                print("Load testing methods from test file...\n")
             f = io.open(path, 'r', encoding='utf-8')
             for line in f:
                 if(line.startswith('##') or len(line.strip()) == 0):
@@ -642,7 +657,7 @@ class Stockholm(object):
         target_date_time = datetime.datetime.strptime(target_date, "%Y-%m-%d")
         for i in range(test_range):
             date = (target_date_time - datetime.timedelta(days=i)).strftime("%Y-%m-%d")
-            is_date_valid = self.check_date(all_quotes, date)
+            is_date_valid, all_quotes = self.check_date(all_quotes, date)
             if is_date_valid:
                 selected_quotes = self.quote_pick(all_quotes, date, methods)
                 res = self.profit_test(selected_quotes, date)
