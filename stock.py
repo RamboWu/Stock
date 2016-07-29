@@ -3,6 +3,7 @@
 
 import pandas_datareader.data as web
 import datetime
+import time
 import requests_cache
 import seaborn as sns
 import numpy as np
@@ -13,7 +14,7 @@ expire_after = datetime.timedelta(days=3)
 session = requests_cache.CachedSession(cache_name='cache', backend='sqlite', expire_after=expire_after)
 
 start = datetime.datetime(2013, 1, 1)
-end = datetime.datetime(2016, 1, 27)
+end = time.strftime( '%Y-%m-%d', time.localtime() )
 df = web.DataReader("GOOGL", 'yahoo', start, end, session=session)
 
 dates =[]
@@ -27,6 +28,6 @@ df['dates'] = dates
 print(df['Adj Close'].tail())
 
 df['Adj Close'].plot(grid=False, figsize=(12,8))
-sns.despine()
+sns.plt.show()
 #print(df.head())
 #print(df.tail())
