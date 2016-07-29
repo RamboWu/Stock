@@ -27,7 +27,16 @@ df['dates'] = dates
 
 print(df['Adj Close'].tail())
 
-df['Adj Close'].plot(grid=False, figsize=(12,8))
+window_short = 20
+window_long = 120
+SD = 0.05
+
+
+df['short_window'] = np.round(df['Adj Close'].rolling(window=window_short,center=False).mean(), 4)
+df['long_window'] = np.round(df['Adj Close'].rolling(window=window_long,center=False).mean(), 4)
+print(df[['Adj Close', 'short_window', 'long_window']].tail())
+
+df[['Adj Close', 'short_window', 'long_window']].plot(grid=False, figsize=(12,8))
 sns.plt.show()
 #print(df.head())
 #print(df.tail())
