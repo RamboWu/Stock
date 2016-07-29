@@ -23,9 +23,16 @@ SD = 0.05
 
 df['short_window'] = np.round(df['Adj Close'].rolling(window=window_short,center=False).mean(), 4)
 df['long_window'] = np.round(df['Adj Close'].rolling(window=window_long,center=False).mean(), 4)
-print(df[['Adj Close', 'short_window', 'long_window']].tail())
+df['s-l'] = df['short_window'] - df['long_window']
+df['Regime'] = np.where(df['s-l'] > df['long_window'] * SD, 1, 0)
+print(df['Regime'].value_counts())
+print(df[['Adj Close', 'short_window', 'long_window', 's-l']].tail())
 
 df[['Adj Close', 'short_window', 'long_window']].plot(grid=False, figsize=(12,8))
+sns.plt.show()
+
+df['Regime'].plot(grid=False, lw=1.5, figsize=(12,8))
+pylab.ylim((-0.1,1.1))
 sns.plt.show()
 #print(df.head())
 #print(df.tail())
