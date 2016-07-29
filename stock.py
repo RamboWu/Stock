@@ -29,8 +29,12 @@ print(df['Regime'].value_counts())
 print(df[['Adj Close', 'short_window', 'long_window', 's-l']].tail())
 
 df[['Adj Close', 'short_window', 'long_window']].plot(grid=False, figsize=(12,8))
-sns.plt.show()
+#sns.plt.show()
 
 df['Regime'].plot(grid=False, lw=1.5, figsize=(12,8))
 pylab.ylim((-0.1,1.1))
-sns.plt.show()
+#sns.plt.show()
+
+df['Market'] = np.log(df['Adj Close'] / df['Adj Close'].shift(1))
+df['Strategy'] = df['Regime'].shift(1) * df['Market']
+print(df[['Market', 'Strategy', 'Regime']].tail())
