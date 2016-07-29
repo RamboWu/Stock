@@ -15,7 +15,7 @@ session = requests_cache.CachedSession(cache_name='cache', backend='sqlite', exp
 
 start = datetime.datetime(2005, 1, 1)
 end = time.strftime( '%Y-%m-%d', time.localtime() )
-df = web.DataReader("000001.ss", 'yahoo', start, end, session=session)
+df = web.DataReader("002493.sz", 'yahoo', start, end, session=session)
 
 window_short = 20
 window_long = 120
@@ -25,19 +25,19 @@ df['short_window'] = np.round(df['Adj Close'].rolling(window=window_short,center
 df['long_window'] = np.round(df['Adj Close'].rolling(window=window_long,center=False).mean(), 4)
 df['s-l'] = df['short_window'] - df['long_window']
 df['Regime'] = np.where(df['s-l'] > df['long_window'] * SD, 1, 0)
-print(df['Regime'].value_counts())
-print(df[['Adj Close', 'short_window', 'long_window', 's-l']].tail())
+#print(df['Regime'].value_counts())
+#print(df[['Adj Close', 'short_window', 'long_window', 's-l']].tail())
 
 df[['Adj Close', 'short_window', 'long_window']].plot(grid=False, figsize=(12,8))
 #sns.plt.show()
 
-df['Regime'].plot(grid=False, lw=1.5, figsize=(12,8))
-pylab.ylim((-0.1,1.1))
+#df['Regime'].plot(grid=False, lw=1.5, figsize=(12,8))
+#pylab.ylim((-0.1,1.1))
 #sns.plt.show()
 
 df['Market'] = np.log(df['Adj Close'] / df['Adj Close'].shift(1))
 df['Strategy'] = df['Regime'].shift(1) * df['Market']
-print(df[['Market', 'Strategy', 'Regime']].tail())
+print(df.tail())
 
 df[['Market', 'Strategy']].cumsum().apply(np.exp).plot(grid=False, figsize=(12,8))
 sns.plt.show()
